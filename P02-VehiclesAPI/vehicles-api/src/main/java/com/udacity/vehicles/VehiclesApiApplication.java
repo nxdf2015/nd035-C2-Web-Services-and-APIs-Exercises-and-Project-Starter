@@ -19,6 +19,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 @SpringBootApplication
 @EnableJpaAuditing
 public class VehiclesApiApplication {
+//todo add eureka client
+//todo add to the registry
+//todo call the pricing service from the registry
 
     public static void main(String[] args) {
         SpringApplication.run(VehiclesApiApplication.class, args);

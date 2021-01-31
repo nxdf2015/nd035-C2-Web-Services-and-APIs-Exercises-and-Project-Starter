@@ -1,5 +1,7 @@
 package com.udacity.vehicles.domain;
 
+import com.udacity.vehicles.client.maps.Address;
+
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -55,6 +57,12 @@ public class Location {
         this.address = address;
     }
 
+    public void setAddress(Address address){
+        setAddress(address.getAddress());
+        setCity(address.getCity());
+        setState(address.getState());
+        setZip(address.getZip());
+    }
     public String getCity() {
         return city;
     }
