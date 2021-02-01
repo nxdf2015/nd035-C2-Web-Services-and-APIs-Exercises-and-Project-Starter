@@ -3,6 +3,8 @@ package com.udacity.vehicles.api;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -16,27 +18,33 @@ import com.udacity.vehicles.domain.Location;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.Details;
 import com.udacity.vehicles.domain.manufacturer.Manufacturer;
+import com.udacity.vehicles.service.CarNotFoundException;
 import com.udacity.vehicles.service.CarService;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
 
-import org.assertj.core.api.Assertions;
+//import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.internal.matchers.Equals;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.boot.test.json.ObjectContent;
+
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.Assert;
 
 /**
  * Implements testing of the CarController class.
@@ -44,6 +52,7 @@ import org.springframework.util.Assert;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureWebTestClient
 @AutoConfigureJsonTesters
 public class CarControllerTest {
 
@@ -62,6 +71,11 @@ public class CarControllerTest {
 
     @MockBean
     private MapsClient mapsClient;
+
+
+
+    @Autowired
+    CarController carController;
 
     /**
      * Creates pre-requisites for testing, such as an example car.
@@ -111,7 +125,10 @@ public class CarControllerTest {
                         .accept(MediaType.APPLICATION_JSON_UTF8));
 
 
-        Assertions.assertThat(carService.list().get(0).getDetails().getModel()).isEqualTo(getCar().getDetails().getModel());
+        car.setId(1l);
+
+
+     Assertions.assertEquals(carService.list().get(0).getDetails().getModel(),getCar().getDetails().getModel());
 
 
     }
@@ -123,22 +140,50 @@ public class CarControllerTest {
     @Test
     public void findCar() throws Exception {
         /**
-         * TODO: Add a test to check that the `get` method works by calling
+         *   Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
+        Car car = getCar();
+
+
+
+        mvc.perform(
+                post(new URI("/cars"))
+                        .content(json.write(car).getJson())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8));
+
+
+        Car carFind = carService.findById(1l);
+
+
+        Assert.assertEquals(carFind.getDetails().getModel(),car.getDetails().getModel());
+        Assert.assertEquals(carFind.getCondition(),car.getCondition());
+        Assert.assertEquals(carFind.getLocation().getLat(),car.getLocation().getLat());
+        Assert.assertEquals(carFind.getLocation().getLon(),car.getLocation().getLon());
     }
 
     /**
      * Tests the deletion of a single car by ID.
      * @throws Exception if the delete operation of a vehicle fails
      */
-    @Test
+    @Test()
     public void deleteCar() throws Exception {
         /**
-         * TODO: Add a test to check whether a vehicle is appropriately deleted
+         *  Add a test to check whether a vehicle is appropriately deleted
          *   when the `delete` method is called from the Car Controller. This
          *   should utilize the car from `getCar()` below.
          */
+        Car car = getCar();
+        mvc.perform(
+                post(new URI("/cars"))
+                        .content(json.write(car).getJson())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isCreated());
+
+        mvc.perform(delete("/cars/1")).andExpect(status().isNoContent());
+
     }
 
     /**

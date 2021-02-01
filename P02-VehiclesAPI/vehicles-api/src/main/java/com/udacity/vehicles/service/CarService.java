@@ -117,6 +117,7 @@ public class CarService {
          *   If it does not exist, throw a CarNotFoundException
          */
          Optional<Car> car = repository.findById(id);
+
          if (car.isEmpty()){
              throw  new CarNotFoundException();
          }
