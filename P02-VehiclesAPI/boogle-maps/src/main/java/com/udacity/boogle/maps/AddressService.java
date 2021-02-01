@@ -23,7 +23,10 @@ public class AddressService {
 
         if(map == null){
             Address address = MockAddressRepository.getRandom() ;
-            System.out.println(address);
+            while(addressRepository.existsByAddress(address.getAddress())){
+                address = MockAddressRepository.getRandom() ;
+            }
+
              addressRepository.save(address);
              mapRepository.save(Map.of(lon,lat,address));
              map= Map.of(lon,lat,address);
