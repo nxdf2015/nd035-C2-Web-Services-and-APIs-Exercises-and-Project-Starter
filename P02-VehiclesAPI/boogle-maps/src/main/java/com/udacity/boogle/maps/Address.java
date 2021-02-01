@@ -1,9 +1,20 @@
 package com.udacity.boogle.maps;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 /**
  * Declares a class to store an address, city, state and zip code.
  */
+@Entity
 public class Address {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     private String address;
     private String city;
@@ -19,6 +30,8 @@ public class Address {
         this.state = state;
         this.zip = zip;
     }
+
+
 
     public String getAddress() {
         return address;
