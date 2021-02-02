@@ -37,6 +37,7 @@ public class PricingService {
         return PRICES.get(vehicleId);
     }
 
+
     /**
      * Gets a random price to fill in for a given vehicle ID.
      * @return random price for a vehicle
@@ -46,4 +47,12 @@ public class PricingService {
                 .multiply(new BigDecimal(5000d)).setScale(2, RoundingMode.HALF_UP);
     }
 
+    public static boolean update(Long vehicleId) throws PriceException {
+        if (!PRICES.containsKey(vehicleId)) {
+            throw new PriceException("Cannot find price for Vehicle " + vehicleId);
+        }
+
+       return  PRICES.compute(vehicleId, (id, price) ->  new Price("USD", randomPrice(), id)) != null;
+
+    }
 }

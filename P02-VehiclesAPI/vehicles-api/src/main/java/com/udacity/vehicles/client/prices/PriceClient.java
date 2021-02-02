@@ -48,4 +48,9 @@ public class PriceClient {
         }
         return "(consult price)";
     }
+
+    public void update(Long id) {
+        client.delete().uri(uriBuilder -> uriBuilder.path("/Services/price").queryParam("id",id).build());
+
+    }
 }

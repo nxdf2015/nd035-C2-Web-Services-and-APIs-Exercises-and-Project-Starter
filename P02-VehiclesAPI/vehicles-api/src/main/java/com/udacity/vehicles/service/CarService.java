@@ -125,6 +125,7 @@ public class CarService {
         /**
          *  Delete the car from the repository.
          */
+        pricing.update(id);
         repository.delete(car.get());
 
     }

@@ -37,8 +37,7 @@ class CarController {
     private final CarService carService;
     private final CarResourceAssembler assembler;
 
-    @Autowired
-    private WebClient pricing;
+
 
     CarController(CarService carService, CarResourceAssembler assembler) {
         this.carService = carService;
