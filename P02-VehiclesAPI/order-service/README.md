@@ -24,5 +24,5 @@
 }
 ```
 
-#checkout 
+# checkout 
 `GET /service/order/{name}`
