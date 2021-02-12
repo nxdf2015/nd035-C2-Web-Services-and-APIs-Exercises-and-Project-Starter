@@ -1,6 +1,7 @@
-# ND035-P02-VehiclesAPI-Project
+# VehiclesAPI-Project
 
-Project repository for JavaND Project 2, where students implement a Vehicles API using Java and Spring Boot that can communicate with separate location and pricing services.
+Project repository for JavaND
+Vehicles API using Java and Spring Boot that can communicate with separate location and pricing services.
 
 ## Instructions
 
@@ -10,6 +11,8 @@ should be running at once for full operation. Further instructions are available
 - [Vehicles API](vehicles-api/README.md)
 - [Pricing Service](pricing-service/README.md)
 - [Boogle Maps](boogle-maps/README.md)
+- [Order Service](order-service/README.md)
+- [Eureka server](eureka-server/README.md)
 
 ## Dependencies
 
