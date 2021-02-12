@@ -27,7 +27,6 @@ import java.util.Collections;
  */
 @SpringBootApplication
 @EnableJpaAuditing
-
 public class VehiclesApiApplication {
 
     public static void main(String[] args) {

@@ -129,4 +129,14 @@ public class CarService {
         repository.delete(car.get());
 
     }
+
+    /**
+     * return price of a vehicle
+     * @param id
+     * @return double
+     */
+    public double getPrice(long id) {
+        String[] price = pricing.getPrice(id).split("\\s+");
+        return Double.parseDouble(price[1]);
+    }
 }

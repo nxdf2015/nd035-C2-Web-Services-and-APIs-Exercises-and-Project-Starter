@@ -125,4 +125,14 @@ class CarController {
 
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * send price of a vehicle
+     *
+     */
+    @GetMapping("/price/{id}")
+    double getPrice(@PathVariable long id){
+        return carService.getPrice(id);
+
+    }
 }
