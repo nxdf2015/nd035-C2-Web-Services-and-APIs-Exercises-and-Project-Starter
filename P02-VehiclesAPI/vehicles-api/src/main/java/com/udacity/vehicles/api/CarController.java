@@ -112,7 +112,7 @@ class CarController {
          */
 
         car.setId(id);
-        carService.save(car);
+        car = carService.save(car);
         Resource<Car> resource = assembler.toResource(car);
         return ResponseEntity.ok(resource);
     }
