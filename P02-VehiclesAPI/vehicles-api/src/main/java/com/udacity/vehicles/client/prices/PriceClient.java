@@ -1,9 +1,21 @@
 package com.udacity.vehicles.client.prices;
 
+import com.sun.tools.rngom.util.Uri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.client.Traverson;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+
+import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 
 /**
  * Implements a class to interface with the Pricing Client for price data.
@@ -30,18 +42,17 @@ public class PriceClient {
      *   error message that the vehicle ID is invalid, or note that the
      *   service is down.
      */
-    public String getPrice(Long vehicleId) {
+    public String  getPrice(Long vehicleId)  {
         try {
-            Price price = client
-                    .get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("services/price/")
-                            .queryParam("vehicleId", vehicleId)
-                            .build()
-                    )
-                    .retrieve().bodyToMono(Price.class).block();
+            Price price=null ;
 
-            return String.format("%s %s", price.getCurrency(), price.getPrice());
+
+             ResponseEntity<Price> response = new RestTemplate().getForEntity("http://localhost:8082/prices/0",Price.class);
+             price = response.getBody();
+
+             return String.valueOf(price.getPrice());
+
+           // return String.format("%s %s", price.getCurrency(), price.getPrice());
 
         } catch (Exception e) {
             log.error("Unexpected error retrieving price for vehicle {}", vehicleId, e);
@@ -50,7 +61,7 @@ public class PriceClient {
     }
 
     public void update(Long id) {
-        client.delete().uri(uriBuilder -> uriBuilder.path("/Services/price").queryParam("id",id).build());
+        client.delete().uri(uriBuilder -> uriBuilder.path("/services-price").pathSegment("" + id).build());
 
     }
 }

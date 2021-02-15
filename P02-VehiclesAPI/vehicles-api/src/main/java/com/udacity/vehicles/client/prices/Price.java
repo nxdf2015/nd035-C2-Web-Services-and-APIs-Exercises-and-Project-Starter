@@ -1,11 +1,13 @@
 package com.udacity.vehicles.client.prices;
 
+import org.springframework.hateoas.ResourceSupport;
+
 import java.math.BigDecimal;
 
 /**
  * Represents the price of a given vehicle, including currency.
  */
-public class Price {
+public class Price extends ResourceSupport {
 
     private String currency;
     private BigDecimal price;

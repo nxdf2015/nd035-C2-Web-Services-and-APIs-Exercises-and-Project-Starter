@@ -1,15 +1,22 @@
 package com.udacity.vehicles.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.udacity.vehicles.api.InvalidCarUpdateException;
 import com.udacity.vehicles.client.maps.Address;
 import com.udacity.vehicles.client.maps.MapsClient;
 import com.udacity.vehicles.client.prices.Price;
 import com.udacity.vehicles.client.prices.PriceClient;
+import com.udacity.vehicles.domain.Condition;
 import com.udacity.vehicles.domain.Location;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -60,10 +67,6 @@ public class CarService {
          *   If it does not exist, throw a CarNotFoundException
          *   Remove the below code as part of your implementation.
          */
-        Optional<Car> car = repository.findById(id);
-        if(car.isEmpty()){
-            throw new CarNotFoundException();
-        }
 
         /**
          *   Use the Pricing Web client you create in `VehiclesApiApplication`
@@ -72,11 +75,8 @@ public class CarService {
          * Note: The car class file uses @transient, meaning you will need to call
          *   the pricing service each time to get the price.
          */
-        String  price = pricing.getPrice(car.get().getId());
-        car.ifPresent(c -> c.setPrice(price));
 
-
-        /**
+         /**
          *  Use the Maps Web client you create in `VehiclesApiApplication`
          *   to get the address for the vehicle. You should access the location
          *   from the car object and feed it to the Maps service.
@@ -84,23 +84,36 @@ public class CarService {
          * Note: The Location class file also uses @transient for the address,
          * meaning the Maps service needs to be called each time for the address.
          */
-       car.ifPresent(c -> c.setLocation(maps.getAddress(c.getLocation())));
 
-      return car.get();
+        return  repository.findById(id)
+                .map( c -> {
+                    c.setPrice(pricing.getPrice(c.getId()));
+                    c.setLocation(maps.getAddress(c.getLocation()));
+                    return c;
+                })
+                .orElseThrow(CarNotFoundException::new);
+
+
     }
+
 
     /**
      * Either creates or updates a vehicle, based on prior existence of car
      * @param car A car object, which can be either new or existing
      * @return the new/updated car is stored in the repository
      */
-    public Car save(Car car) {
+    public Car save(Car car)    {
         if (car.getId() != null) {
             return repository.findById(car.getId())
                     .map(carToBeUpdated -> {
-                        carToBeUpdated.setDetails(car.getDetails());
-                        carToBeUpdated.setLocation(car.getLocation());
-                        return repository.save(carToBeUpdated);
+                        if(car.getCondition() == Condition.NEW) {
+
+
+                            carToBeUpdated.setDetails(car.getDetails());
+                            carToBeUpdated.setLocation(car.getLocation());
+                            carToBeUpdated = repository.save(carToBeUpdated);
+                        }
+                        return carToBeUpdated;
                     }).orElseThrow(CarNotFoundException::new);
         }
 
@@ -135,8 +148,8 @@ public class CarService {
      * @param id
      * @return double
      */
-    public double getPrice(long id) {
-        String[] price = pricing.getPrice(id).split("\\s+");
-        return Double.parseDouble(price[1]);
+    public String getPrice(long id) throws IOException{
+       return  pricing.getPrice(id);
+
     }
 }

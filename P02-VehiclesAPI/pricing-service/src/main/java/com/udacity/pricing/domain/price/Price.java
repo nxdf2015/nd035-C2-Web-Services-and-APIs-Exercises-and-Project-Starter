@@ -1,17 +1,40 @@
 package com.udacity.pricing.domain.price;
 
+import com.udacity.pricing.service.PricingService;
+import org.springframework.data.rest.core.annotation.HandleBeforeSave;
+import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
+import org.springframework.hateoas.ResourceSupport;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
 /**
  * Represents the price of a given vehicle, including currency.
  */
-public class Price {
+
+
+@Entity
+public class Price extends ResourceSupport {
+
+
 
     private String currency;
     private BigDecimal price;
+
+    @Id
     private Long vehicleId;
 
     public Price() {
+    }
+
+    public Price(String currency, long id){
+        this.currency = currency;
+
+        price = PricingService.randomPrice();
+        vehicleId = id;
+
     }
 
     public Price(String currency, BigDecimal price, Long vehicleId) {
@@ -19,6 +42,7 @@ public class Price {
         this.price = price;
         this.vehicleId = vehicleId;
     }
+
 
     public String getCurrency() {
         return currency;
