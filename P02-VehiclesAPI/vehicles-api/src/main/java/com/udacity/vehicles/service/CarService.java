@@ -106,7 +106,7 @@ public class CarService {
         if (car.getId() != null) {
             return repository.findById(car.getId())
                     .map(carToBeUpdated -> {
-                        if(car.getCondition() == Condition.NEW) {
+                        if(car.getCondition() == carToBeUpdated.getCondition()) {
 
 
                             carToBeUpdated.setDetails(car.getDetails());
