@@ -1,26 +1,16 @@
 package com.udacity.vehicles.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.udacity.vehicles.api.InvalidCarUpdateException;
-import com.udacity.vehicles.client.maps.Address;
 import com.udacity.vehicles.client.maps.MapsClient;
-import com.udacity.vehicles.client.prices.Price;
 import com.udacity.vehicles.client.prices.PriceClient;
-import com.udacity.vehicles.domain.Condition;
-import com.udacity.vehicles.domain.Location;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 
 /**
