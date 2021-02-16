@@ -47,7 +47,7 @@ public class PriceClient {
             Price price=null ;
 
 
-             ResponseEntity<Price> response = new RestTemplate().getForEntity("http://localhost:8082/prices/0",Price.class);
+             ResponseEntity<Price> response = new RestTemplate().getForEntity("http://localhost:8082/prices/" + vehicleId,Price.class);
              price = response.getBody();
 
              return String.valueOf(price.getPrice());
