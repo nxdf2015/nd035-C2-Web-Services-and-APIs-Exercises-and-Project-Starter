@@ -187,26 +187,6 @@ public class CarControllerTest {
 
     }
 
-    @Test
-    public void updateCar() throws Exception{
-        Car car = getCar();
-        mvc.perform(
-                post(new URI("/cars"))
-                        .content(json.write(car).getJson())
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .accept(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isCreated());
-
-        car.getDetails().setExternalColor("yellow");
-
-        mvc.perform(
-                put(new URI("/cars/1"))
-                        .content(json.write(car).getJson())
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .accept(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.details.externalColor").value("yellow"));
-    }
 
     @Test
     public void updateCondition() throws Exception{
